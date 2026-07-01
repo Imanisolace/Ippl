@@ -57,12 +57,23 @@ elif sim == "Heat Diffusion":
     alpha = st.sidebar.slider("Diffusivity", 0.1, 2.0, 0.5)
     t_steps = st.sidebar.slider("Time Steps", 10, 200, 100)
 
-    N=200; x=np.linspace(0,1,N); dx=x[1]-x[0]
-    u = np.sin(np.pi*x)
+    N = 200
+    x = np.linspace(0, 1, N)
+    dx = x[1] - x[0]
+    dt = 0.001 * dx**2 / alpha # stability condition for FDM. Added this!
+
+    u = np.sin(np.pi * x) # initial condition: hot in middle
+    u[0] = 0; u[-1] = 0 # boundary conditions
+
     for t in range(t_steps):
-        u[1:-1] = u[1:-1] + alpha*dt/dx**2 * (u[2:]-2*u[1:-1]+u[:-2])
+        u[1:-1] = u[1:-1] + alpha * dt / dx**2 * (u[2:] - 2*u[1:-1] + u[:-2])
+    
     fig, ax = plt.subplots()
-    ax.plot(x,u)
+    ax.plot(x, u)
+    ax.set_ylim(-0.1, 1.1)
+    ax.set_xlabel("x")
+    ax.set_ylabel("Temperature u")
+    ax.set_title(f"After {t_steps} steps")
     st.pyplot(fig)
 
 # --- 3. DAMPED PENDULUM ODE ---
